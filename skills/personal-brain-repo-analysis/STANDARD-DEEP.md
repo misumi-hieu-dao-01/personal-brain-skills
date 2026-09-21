@@ -10,7 +10,7 @@ from what is already collected.
    fork/archive status, size guard, and analyzed commit. Replay prior feedback.
    For a repository over either size limit, stop here until the user explicitly
    approves that known size; the original analysis request is not approval.
-   Start or resume `.claude/state/repo-analysis.<slug>.state.json`.
+   Start or resume `<output-root>/state.json`.
 
 2. **Prepare evidence.** Reuse a matching local clone. If none exists, make a
    blobless shallow clone in `/tmp`, preferring
@@ -52,10 +52,9 @@ from what is already collected.
 
 8. **Finalize.** Write `analysis.json`; read `REFERENCE.md` §3.1 for its schema.
    Inventory unexplored evidence once and record it in `coverage-audit.jsonl`.
-   Do not reopen analysis. Run `node scripts/lib/analysis-schema.mjs
-   <output-root>/analysis.json` and, for Standard or Deep, `node
-   scripts/lib/value-map-schema.mjs <output-root>/value-map.json`; also verify
-   every candidate evidence ID exists in `findings.jsonl`. Any failure leaves
+   Do not reopen analysis. Run `node <skill-dir>/validate.mjs analysis
+   <output-root>/analysis.json` and `node <skill-dir>/validate.mjs value-map
+   <output-root>/value-map.json <output-root>/findings.jsonl`. Any failure leaves
    state non-complete. Update the canonical state file only after every check
    passes.
 

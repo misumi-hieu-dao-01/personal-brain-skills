@@ -1,0 +1,16 @@
+{
+  "name": "personal-brain-repo-analysis",
+  "version": "7.1",
+  "entrypoint": "SKILL.md",
+  "required": [
+    "QUICK.md",
+    "STANDARD-DEEP.md",
+    "REFERENCE.md",
+    "CONVENTIONS.md",
+    "validate.mjs"
+  ],
+  "optional": [
+    "TAG_SUGGESTION.md",
+    "ARCHIVE.md"
+  ]
+}

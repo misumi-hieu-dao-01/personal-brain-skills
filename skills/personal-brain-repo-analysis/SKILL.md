@@ -8,8 +8,8 @@ description: >-
 ---
 
 <!-- prettier-ignore-start -->
-**Document Version:** 6.9
-**Last Updated:** 2026-09-15
+**Document Version:** 7.1
+**Last Updated:** 2026-09-21
 **Status:** ACTIVE
 <!-- prettier-ignore-end -->
 
@@ -34,13 +34,30 @@ the repo's idea and see which discoveries deserve attention.
 - `--depth=quick`: read [QUICK.md](./QUICK.md), then follow it. Budget: 30
   seconds.
 - `--depth=standard` or no depth: read
-  [STANDARD-DEEP.md](./STANDARD-DEEP.md), then follow its Standard branch.
-  Budget: 15 minutes.
+  [STANDARD-DEEP.md](./STANDARD-DEEP.md), then follow its Standard branch and
+  only the [REFERENCE.md](./REFERENCE.md) sections it names. Budget: 15 minutes.
 - `--depth=deep`: read [STANDARD-DEEP.md](./STANDARD-DEEP.md), then follow its
-  Deep additions. Budget: 30 minutes.
+  Deep additions and only the [REFERENCE.md](./REFERENCE.md) sections it names.
+  Budget: 30 minutes.
 
 Read only the selected branch. Adoption analysis runs only when the user
 explicitly passes `--lens=adoption`.
+
+## Dependency preflight
+
+Before fetching the target repository or writing run state:
+
+1. Read [manifest.json](./manifest.json) and verify its `entrypoint` and every
+   `required` path are readable files relative to this skill folder.
+2. Verify the selected branch dependency: Quick requires `QUICK.md`; Standard
+   and Deep require `STANDARD-DEEP.md` plus only its named `REFERENCE.md`
+   sections. `CONVENTIONS.md` supplies shared scoring rules. Optional files do
+   not block a run unless the selected follow-up names one.
+3. Stop on a missing dependency and report its exact path. Do not begin a
+   partial analysis.
+4. Resolve the results repository from `REPO_RESEARCH_DIR`, or from a sibling
+   directory named `repo-research` beside the Personal Brain repository. Verify
+   it is a Git repository before starting.
 
 ## Run contract
 
@@ -54,8 +71,7 @@ explicitly passes `--lens=adoption`.
   describe any similar repo unchanged.
 - **Write checkpoints.** Write each required artifact before moving on and
   verify it is non-empty. Retry a failed operation once, then record the gap.
-- **Resume safely.** Update
-  `.claude/state/repo-analysis.<slug>.state.json` after each phase. Record depth,
+- **Resume safely.** Update `<output-root>/state.json` after each phase. Record depth,
   commit, output root, completed phases, deferred items, and whether the budget
   was exhausted. Use `status: in-progress` while running, `failed` when the run
   stops unsuccessfully, and `complete` only after every completion criterion.
@@ -97,11 +113,12 @@ specific enough that it could not describe a close peer unchanged.
 
 ## Shared output contract
 
-Write under the matching clone's `.research/analysis/<slug>/`, or fall back to
-this brain's `.research/analysis/<slug>/`:
+Write to
+`<repo-research>/repos/<owner>--<repo>/runs/<YYYY-MM-DD>--<short-commit>/`.
+This run directory is `<output-root>`:
 
 - `analysis.json` — schema v3.0; validate with
-  `node scripts/lib/analysis-schema.mjs <path>`
+  `node <skill-dir>/validate.mjs analysis <path>`
 - `summary.md` — concise idea, top discoveries, weaknesses, evidence limits
 - `creator-view.md` — full discovery narrative; Quick may use a short version
 - `findings.jsonl` — evidence records

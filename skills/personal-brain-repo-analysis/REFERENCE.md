@@ -197,16 +197,18 @@ diversity). Other dimensions require clone.
 
 ## 3. Output Schemas
 
-Primary artifacts are written to `.research/analysis/<repo-slug>/`. Structured
-artifacts carry their own schema version. Re-scan is the migration path for old
-formats; never rewrite historical analysis implicitly.
+Primary artifacts are written to
+`<repo-research>/repos/<owner>--<repo>/runs/<YYYY-MM-DD>--<short-commit>/`.
+Structured artifacts carry their own schema version. Re-scan is the migration
+path for old formats; never rewrite historical analysis implicitly.
 
 ### 3.1 `analysis.json`
 
 Top-level analysis result. Consumed by `/deep-plan` as research context, by
 `/recall` for search indexing, and by the Compare resume option.
 
-**Validates with:** `node scripts/lib/analysis-schema.mjs <analysis.json>`.
+**Validates with:**
+`node <skill-dir>/validate.mjs analysis <analysis.json>`.
 
 ```json
 {
@@ -417,8 +419,8 @@ TDMS-compatible format before intake:
 ### 3.3 `value-map.json`
 
 Canonical knowledge handoff produced by Standard and Deep and consumed by
-brain-fit. Validate it with
-`node scripts/lib/value-map-schema.mjs <value-map.json>`. Keep extraction
+brain-fit. Validate it with `node <skill-dir>/validate.mjs value-map
+<value-map.json> <findings.jsonl>`. Keep extraction
 decisions in the extraction journal; this evidence artifact stays immutable.
 
 ```json
